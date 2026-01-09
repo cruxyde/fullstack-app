@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FULLSTACK APP</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-brand">FULLSTACK APP</div>
+    <div class="nav-right" id="nav-right-guest">
+      <button class="nav-btn" id="nav-login-btn">Login</button>
+      <button class="nav-btn" id="nav-register-btn">Register</button>
+    </div>
+    <div class="nav-right nav-auth" id="nav-right-auth">
+      <div class="dropdown">
+        <button class="nav-btn dropdown-toggle" id="user-menu-toggle">
+          Menu ▾
+        </button>
+        <div class="dropdown-menu" id="user-menu">
+          <button class="dropdown-item" data-view="profile">Profile</button>
+          <button class="dropdown-item" data-view="employees">Employees</button>
+          <button class="dropdown-item" data-view="accounts">Accounts</button>
+          <button class="dropdown-item" data-view="departments">Departments</button>
+          <button class="dropdown-item" data-view="requests">My Request</button>
+          <button class="dropdown-item" id="logout-btn">Log out</button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <main class="main">
+    <section id="landing-view" class="view">
+      <h1>Welcome to FULLSTACK APP</h1>
+      <p>
+        This is a simple front-end management system built only with HTML, CSS, and JavaScript.
+        Login or register to manage accounts, employees, departments, and requests in real time.
+      </p>
+    </section>
+
+    <section id="dashboard-view" class="view hidden">
+      <div class="card">
+        <h1 id="dashboard-greeting">Hello!</h1>
+        <p id="dashboard-description"></p>
+        <div style="margin-top: 1.5rem;">
+          <p>Use the menu in the top right to navigate to:</p>
+          <ul style="margin-top: 0.5rem; margin-left: 1.5rem;">
+            <li><strong>Be</strong> - The website features a clean, modern design focused on clarity, usability, and visual consistency. A neutral color palette of white and light gray forms the base, complemented by a primary accent color (deep blue) used for buttons, links, and key highlights.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="auth-view" class="view hidden">
+      <div class="card">
+        <h2 id="auth-title">Login</h2>
+        <form id="auth-form">
+          <div class="form-row">
+            <label for="auth-email">Email</label>
+            <input type="email" id="auth-email" required />
+          </div>
+          <div class="form-row">
+            <label for="auth-password">Password</label>
+            <input type="password" id="auth-password" required />
+          </div>
+          <div class="form-actions">
+            <button type="submit" class="primary-btn" id="auth-submit-btn">Login</button>
+          </div>
+          <p class="hint" id="auth-hint"></p>
+        </form>
+      </div>
+    </section>
+
+    <section id="profile-view" class="view hidden">
+      <div class="card">
+        <h2>Profile</h2>
+        <div id="profile-content"></div>
+      </div>
+      <div class="card">
+        <h3>Other Accounts</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>First Name</th>
+              <th>Last Name</th>
+              <th>Email</th>
+              <th>Role</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="profile-others-body"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="accounts-view" class="view hidden">
+      <div class="card">
+        <h2>Accounts</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>First Name</th>
+              <th>Last Name</th>
+              <th>Email</th>
+              <th>Role</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="accounts-body"></tbody>
+        </table>
+        <div style="margin-top: 1rem;">
+          <button class="primary-btn" id="add-account-btn">Add Account</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="employees-view" class="view hidden">
+      <div class="card">
+        <h2>Employees</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Employee ID</th>
+              <th>Account</th>
+              <th>Position</th>
+              <th>Department</th>
+              <th>Hire Date</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="employees-body"></tbody>
+        </table>
+        <div style="margin-top: 1rem;">
+          <button class="primary-btn" id="add-employee-btn">Add Employee</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="departments-view" class="view hidden">
+      <div class="card">
+        <h2>Departments</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Description</th>
+              <th>Employee Count</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="departments-body"></tbody>
+        </table>
+        <div style="margin-top: 1rem;">
+          <button class="primary-btn" id="add-department-btn">Add Department</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="requests-view" class="view hidden">
+      <div class="card">
+        <h2>My Requests</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Type</th>
+              <th>Employee</th>
+              <th>Items</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="requests-body"></tbody>
+        </table>
+        <div style="margin-top: 1rem;">
+          <button class="primary-btn" id="add-request-btn">Add Request</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div class="modal-backdrop hidden" id="modal-backdrop">
+    <div class="modal" id="modal">
+      <div class="modal-header">
+        <h3 id="modal-title"></h3>
+        <button class="close-btn" id="modal-close-btn">&times;</button>
+      </div>
+      <div class="modal-body" id="modal-body"></div>
+      <div class="modal-footer">
+        <button class="secondary-btn" id="modal-cancel-btn">Cancel</button>
+        <button class="primary-btn" id="modal-save-btn">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
+
