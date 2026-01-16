@@ -76,6 +76,15 @@ const modalCloseBtn = document.getElementById("modal-close-btn");
 const modalCancelBtn = document.getElementById("modal-cancel-btn");
 const modalSaveBtn = document.getElementById("modal-save-btn");
 
+// Confirmation Modal
+const confirmModalBackdrop = document.getElementById("confirm-modal-backdrop");
+const confirmModalEl = document.getElementById("confirm-modal");
+const confirmModalTitle = document.getElementById("confirm-modal-title");
+const confirmModalMessage = document.getElementById("confirm-modal-message");
+const confirmModalCloseBtn = document.getElementById("confirm-modal-close-btn");
+const confirmModalCancelBtn = document.getElementById("confirm-modal-cancel-btn");
+const confirmModalDeleteBtn = document.getElementById("confirm-modal-delete-btn");
+
 // Buttons to add items
 const addAccountBtn = document.getElementById("add-account-btn");
 const addEmployeeBtn = document.getElementById("add-employee-btn");
@@ -84,6 +93,7 @@ const addRequestBtn = document.getElementById("add-request-btn");
 
 let currentAuthMode = "login"; // or "register"
 let currentModalConfig = null;
+let pendingDeleteAction = null; // Store the delete function to execute after confirmation
 
 function showView(name) {
   const allViews = [
@@ -733,17 +743,75 @@ function handleModalSave() {
   closeModal();
 }
 
+
+function countAdminAccounts() {
+  return state.accounts.filter((a) => a.role && a.role.toLowerCase() === "admin").length;
+}
+
+
+function getCurrentUser() {
+  return state.accounts.find((a) => a.id === state.currentUserId);
+}
+
+
+function openConfirmModal(title, message, onConfirm) {
+  confirmModalTitle.textContent = title || "Confirm Deletion";
+  confirmModalMessage.textContent = message;
+  pendingDeleteAction = onConfirm;
+  confirmModalBackdrop.classList.remove("hidden");
+}
+
+function closeConfirmModal() {
+  confirmModalBackdrop.classList.add("hidden");
+  pendingDeleteAction = null;
+}
+
+function executePendingDelete() {
+  if (pendingDeleteAction) {
+    pendingDeleteAction();
+    closeConfirmModal();
+  }
+}
+
 // Delete handlers
 function deleteAccount(id) {
-  if (!confirm("Delete this account?")) return;
-  state.accounts = state.accounts.filter((a) => a.id !== id);
+  const accountToDelete = state.accounts.find((a) => a.id === id);
+  if (!accountToDelete) return;
+
+  const currentUser = getCurrentUser();
+  if (!currentUser) return;
+
+  
   if (state.currentUserId === id) {
-    state.currentUserId = null;
+    alert("You cannot delete your own account. Please ask another admin to delete it.");
+    return;
   }
-  saveState();
-  updateNav();
-  renderAccounts();
-  renderProfile();
+
+  
+  const adminCount = countAdminAccounts();
+  const isAccountAdmin = accountToDelete.role && accountToDelete.role.toLowerCase() === "admin";
+  
+  if (isAccountAdmin && adminCount <= 1) {
+    alert("Cannot delete the last admin account. The system requires at least one admin.");
+    return;
+  }
+
+  
+  const message = `Are you sure you want to delete ${accountToDelete.email}? This action cannot be undone.`;
+  openConfirmModal("Delete Account", message, () => {
+   
+    state.accounts = state.accounts.filter((a) => a.id !== id);
+    
+    
+    if (state.currentUserId === id) {
+      state.currentUserId = null;
+    }
+    
+    saveState();
+    updateNav();
+    renderAccounts();
+    renderProfile();
+  });
 }
 
 function deleteEmployee(id) {
@@ -819,6 +887,17 @@ modalSaveBtn.addEventListener("click", handleModalSave);
 modalBackdrop.addEventListener("click", (e) => {
   if (e.target === modalBackdrop) {
     closeModal();
+  }
+});
+
+// Confirmation modal event listeners
+confirmModalCloseBtn.addEventListener("click", closeConfirmModal);
+confirmModalCancelBtn.addEventListener("click", closeConfirmModal);
+confirmModalDeleteBtn.addEventListener("click", executePendingDelete);
+
+confirmModalBackdrop.addEventListener("click", (e) => {
+  if (e.target === confirmModalBackdrop) {
+    closeConfirmModal();
   }
 });
 

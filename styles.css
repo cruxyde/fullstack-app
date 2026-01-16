@@ -307,6 +307,10 @@ tbody tr:hover {
   cursor: pointer;
 }
 
+#confirm-modal-delete-btn:hover {
+  background-color: #b91c1c !important;
+}
+
 @media (max-width: 640px) {
   .navbar {
     flex-wrap: wrap;
